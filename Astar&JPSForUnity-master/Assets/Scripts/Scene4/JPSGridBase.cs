@@ -95,10 +95,14 @@ public class JPSGridBase : MonoBehaviour
         }
         if (m_Path != null)
         {
-            foreach(var node in m_Path)
+            JPSNode tempNode = null;
+            foreach (var node in m_Path)
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawCube(node.m_worldPos, Vector3.one * (m_NodeDiameter - 0.1f));
+                if (tempNode != null)
+                    Gizmos.DrawLine(node.m_worldPos, tempNode.m_worldPos);
+                tempNode = node;
             }
         }
     }
