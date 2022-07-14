@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JPSNode
+public class JPSNode : IEquatable<JPSNode>
 {
     public Vector3 m_worldPos;
     public bool m_canWalk;
@@ -23,5 +24,10 @@ public class JPSNode
         m_worldPos = worldPos;
         m_GridX = gridX;
         m_GridY = gridY;
+    }
+
+    public bool Equals(JPSNode other)
+    {
+        return other.m_GridX == this.m_GridX && other.m_GridY == this.m_GridY;
     }
 }

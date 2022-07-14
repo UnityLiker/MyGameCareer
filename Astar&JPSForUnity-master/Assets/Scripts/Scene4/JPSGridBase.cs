@@ -77,7 +77,7 @@ public class JPSGridBase : MonoBehaviour
 
     public bool IsInBound(int x, int y)
     {
-        return (x > 0 && x < m_GridCountX && y > 0 && y < m_GridCountY);
+        return (x >= 0 && x < m_GridCountX && y >= 0 && y < m_GridCountY);
     }
 
     private void OnDrawGizmos()
@@ -105,5 +105,7 @@ public class JPSGridBase : MonoBehaviour
                 tempNode = node;
             }
         }
+        
     }
+
 }

@@ -55,7 +55,7 @@ public class JPSFindPath : MonoBehaviour
             {
                 GeneratePath(startNode, endNode);
                 //stopwatch.Stop();
-                //UnityEngine.Debug.LogError("JPSÂØªË∑ØÂºÄÈîÄ " + stopwatch.ElapsedMilliseconds);
+                //UnityEngine.Debug.LogError("JPS—∞¬∑ø™œ˙ " + stopwatch.ElapsedMilliseconds);
                 return;
             }
 
@@ -71,7 +71,7 @@ public class JPSFindPath : MonoBehaviour
                 {
                     if ((x != 0 || y != 0) && (x != fromDirX || y != fromDirY))
                     {
-                        //Áõ¥Á∫øÊñπÂêë
+                        //÷±œﬂ∑ΩœÚ
                         if (x == 0 || y == 0)
                         {
                             JPSNode node = lineFind(x, y, currentNode);
@@ -100,7 +100,7 @@ public class JPSFindPath : MonoBehaviour
                         }
                         else
                         {
-                            //ÂØπË±°Á∫ø
+                            //∂‘œÛœﬂ
                             JPSNode node = biasFind(x, y, currentNode);
                             if (node != null)
                             {
@@ -144,7 +144,7 @@ public class JPSFindPath : MonoBehaviour
         int endY = endNode.m_GridY;
         if (!m_GridBase.IsInBound(startX, startY) || !m_GridBase.IsInBound(endX, endY))
         {
-            UnityEngine.Debug.LogError("Ëµ∑ÁÇπorÁªàÁÇπ ‰∏çÂú®Ê†ºÂ≠êÂÜÖ");
+            UnityEngine.Debug.LogError("∆µ„or÷’µ„ ≤ª‘⁄∏Ò◊”ƒ⁄");
             return;
         }
         Stopwatch stopwatch = new Stopwatch();
@@ -161,7 +161,7 @@ public class JPSFindPath : MonoBehaviour
         {
             int fromDirX = 0;
             int fromDirY = 0;
-            //Êù•ÁöÑÊñπÂêë
+            //¿¥µƒ∑ΩœÚ
             if (currentNode.parent != null)
             {
                 fromDirX = clamp(currentNode.parent.m_GridX - currentNode.m_GridX, -1, 1);
@@ -175,7 +175,7 @@ public class JPSFindPath : MonoBehaviour
                     {
                         if (x == 0 || y == 0)
                         {
-                        //Áõ¥Á∫ø
+                        //÷±œﬂ
                             JPSNode node = lineFind(x, y, currentNode);
                             if (node != null)
                             {
@@ -202,7 +202,7 @@ public class JPSFindPath : MonoBehaviour
                         }
                         else
                         {
-                            //ÊñúÁ∫ø
+                            //–±œﬂ
                             JPSNode node = biasFind(x, y, currentNode);
                             if (node != null)
                             {
@@ -233,11 +233,11 @@ public class JPSFindPath : MonoBehaviour
 
             if (openList.Count <= 0)
             {
-                UnityEngine.Debug.LogError("JPSÂØªË∑ØÂ§±Ë¥•");
+                UnityEngine.Debug.LogError("JPS—∞¬∑ ß∞‹");
                 return;
             }
 
-            //openSet‰∏≠ÂéªÊúÄÂ∞èFcost
+            //openSet÷–»•◊Ó–°Fcost
             var ier = openList.GetEnumerator();
             int minCost = int.MaxValue;
             JPSNode newCurCell = null;
@@ -282,13 +282,13 @@ public class JPSFindPath : MonoBehaviour
     {
         int horX = x - dirX;
         int horY = y - dirY;
-        //ÂèØ‰ª•Ëµ∞ÊñúËßí
+        //ø…“‘◊ﬂ–±Ω«
         return m_GridBase.IsInBound(x, y) && m_GridBase.m_Grid[x, y].m_canWalk && ((m_GridBase.IsInBound(horX, y) && m_GridBase.m_Grid[horX, y].m_canWalk) || (m_GridBase.IsInBound(x, horY) && m_GridBase.m_Grid[x, horY].m_canWalk));
-        //‰∏çËÉΩËµ∞ÊñúËßí
+        //≤ªƒ‹◊ﬂ–±Ω«
         //return m_GridBase.IsInBound(x, y) && m_GridBase.m_Grid[x,y].m_canWalk && m_GridBase.IsInBound(horX, y) && m_GridBase.m_Grid[horX, y].m_canWalk && m_GridBase.IsInBound(x, horY) && m_GridBase.m_Grid[x, horY].m_canWalk;
     }
 
-    //ÂØπËßíÁ∫øÊêúÁ¥¢Ë∑≥ÁÇπ
+    //∂‘Ω«œﬂÀ—À˜Ã¯µ„
     private JPSNode biasFind(int dirX, int dirY, JPSNode currentNode)
     {
         int nextX = currentNode.m_GridX + dirX;
@@ -310,7 +310,7 @@ public class JPSFindPath : MonoBehaviour
         {
             return nextNode;
         }
-        //Âà§Êñ≠nextÊòØÂê¶‰∏∫Ë∑≥ÁÇπ
+        //≈–∂œnext «∑ÒŒ™Ã¯µ„
         JPSNode horNode = lineFind(dirX, 0, nextNode);
         if (horNode != null) return nextNode;
         JPSNode verNode = lineFind(0, dirY, nextNode);
@@ -319,7 +319,7 @@ public class JPSFindPath : MonoBehaviour
         return biasFind(dirX, dirY, nextNode);
     }
 
-    //Áõ¥Á∫øÊêúÁ¥¢Ë∑≥ÁÇπ
+    //÷±œﬂÀ—À˜Ã¯µ„
     private JPSNode lineFind(int dirX, int dirY, JPSNode currentNode)
     {
         int nextX = currentNode.m_GridX + dirX;
@@ -334,16 +334,16 @@ public class JPSFindPath : MonoBehaviour
         {
             return null;
         }
-        //Âà§Êñ≠nextÊòØÂê¶‰∏∫Ë∑≥ÁÇπ
+        //≈–∂œnext «∑ÒŒ™Ã¯µ„
         //1.next == end
         if (nextNode.Equals(endNode))
         {
             return nextNode;
         }
-        //2.nextÊúâÂº∫Ëø´ÈÇªÂ±Ö
+        //2.next”–«ø∆»¡⁄æ”
         if (dirX != 0)
         {
-            //‰∏ä‰∏ãÁÇπÊòØÂê¶ÊòØË∑≥ÁÇπ
+            //…œœ¬µ„ «∑Ò «Ã¯µ„
             int upY = nextY + 1;
             if (m_GridBase.IsInBound(nextX, upY))
             {
