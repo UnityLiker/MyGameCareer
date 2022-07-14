@@ -22,6 +22,7 @@ public class JPSFindPath : MonoBehaviour
         FindingPath();
     }
 
+    
     void FindingPath()
     {
         JPSNode startNode = m_GridBase.GetFromPosition(start.position);
@@ -54,7 +55,7 @@ public class JPSFindPath : MonoBehaviour
             {
                 GeneratePath(startNode, endNode);
                 //stopwatch.Stop();
-                //UnityEngine.Debug.LogError("JPS—∞¬∑ø™œ˙ " + stopwatch.ElapsedMilliseconds);
+                //UnityEngine.Debug.LogError("JPSÂØªË∑ØÂºÄÈîÄ " + stopwatch.ElapsedMilliseconds);
                 return;
             }
 
@@ -70,7 +71,7 @@ public class JPSFindPath : MonoBehaviour
                 {
                     if ((x != 0 || y != 0) && (x != fromDirX || y != fromDirY))
                     {
-                        //÷±œﬂ∑ΩœÚ
+                        //Áõ¥Á∫øÊñπÂêë
                         if (x == 0 || y == 0)
                         {
                             JPSNode node = lineFind(x, y, currentNode);
@@ -99,7 +100,7 @@ public class JPSFindPath : MonoBehaviour
                         }
                         else
                         {
-                            //∂‘œÛœﬂ
+                            //ÂØπË±°Á∫ø
                             JPSNode node = biasFind(x, y, currentNode);
                             if (node != null)
                             {
@@ -109,7 +110,7 @@ public class JPSFindPath : MonoBehaviour
                                     if (!openList.Contains(node))
                                     {
                                         node.parent = currentNode;
-                                        node.hCost = GetDistance(node, currentNode);
+                                        node.hCost = GetDistance(node, endNode);
                                         node.gCost = gCost;
                                         openList.Add(node);
                                     }
@@ -130,21 +131,169 @@ public class JPSFindPath : MonoBehaviour
         }
     }
 
+    
+
+    /*
+    public void findPath2()
+    {
+        JPSNode startNode = m_GridBase.GetFromPosition(start.position);
+        JPSNode endNode = m_GridBase.GetFromPosition(end.position);
+        int startX = startNode.m_GridX;
+        int startY = startNode.m_GridY;
+        int endX = endNode.m_GridX;
+        int endY = endNode.m_GridY;
+        if (!m_GridBase.IsInBound(startX, startY) || !m_GridBase.IsInBound(endX, endY))
+        {
+            UnityEngine.Debug.LogError("Ëµ∑ÁÇπorÁªàÁÇπ ‰∏çÂú®Ê†ºÂ≠êÂÜÖ");
+            return;
+        }
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        closedList.Clear();
+        openList.Clear();
+
+        startNode.parent = null;
+        closedList.Add(startNode);
+
+        JPSNode currentNode = startNode;
+        while (!currentNode.Equals(endNode))
+        {
+            int fromDirX = 0;
+            int fromDirY = 0;
+            //Êù•ÁöÑÊñπÂêë
+            if (currentNode.parent != null)
+            {
+                fromDirX = clamp(currentNode.parent.m_GridX - currentNode.m_GridX, -1, 1);
+                fromDirY = clamp(currentNode.parent.m_GridY - currentNode.m_GridX, -1, 1);
+            }
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    if ((x != 0 || y != 0) && (x != fromDirX || y != fromDirY))
+                    {
+                        if (x == 0 || y == 0)
+                        {
+                        //Áõ¥Á∫ø
+                            JPSNode node = lineFind(x, y, currentNode);
+                            if (node != null)
+                            {
+                                if (!closedList.Contains(node) && node.m_canWalk)
+                                {
+                                    int gCost = getGCostInLine(node, currentNode) + currentNode.gCost;
+                                    if (!openList.Contains(node))
+                                    {
+                                        node.parent = currentNode;
+                                        node.hCost = getHCost(node, endNode);
+                                        node.gCost = gCost;
+                                        openList.Add(node);
+                                    }
+                                    else
+                                    {
+                                        if (gCost < node.gCost)
+                                        {
+                                            node.parent = currentNode;
+                                            node.gCost = gCost;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //ÊñúÁ∫ø
+                            JPSNode node = biasFind(x, y, currentNode);
+                            if (node != null)
+                            {
+                                if (!closedList.Contains(node) && node.m_canWalk)
+                                {
+                                    int gCost = getGCostInBias(node, currentNode) + currentNode.gCost;
+                                    if (!openList.Contains(node))
+                                    {
+                                        node.parent = currentNode;
+                                        node.hCost = getHCost(node, endNode);
+                                        node.gCost = gCost;
+                                        openList.Add(node);
+                                    }
+                                    else
+                                    {
+                                        if (gCost < node.gCost)
+                                        {
+                                            node.parent = currentNode;
+                                            node.gCost = gCost;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (openList.Count <= 0)
+            {
+                UnityEngine.Debug.LogError("JPSÂØªË∑ØÂ§±Ë¥•");
+                return;
+            }
+
+            //openSet‰∏≠ÂéªÊúÄÂ∞èFcost
+            var ier = openList.GetEnumerator();
+            int minCost = int.MaxValue;
+            JPSNode newCurCell = null;
+            while (ier.MoveNext())
+            {
+                JPSNode cell = ier.Current;
+                int f = cell.gCost + cell.hCost;
+                if (f < minCost)
+                {
+                    minCost = f;
+                    newCurCell = cell;
+                }
+            }
+            openList.Remove(newCurCell);
+            closedList.Add(newCurCell);
+            currentNode = newCurCell;
+        }
+
+        Stack<JPSNode> path = new Stack<JPSNode>();
+        JPSNode loopNode = endNode;
+        while (loopNode != null)
+        {
+            path.Push(loopNode);
+            loopNode = loopNode.parent;
+        }
+        stopwatch.Stop();
+        m_GridBase.m_Path = path;
+    }
+
+    */
+
+    private int clamp(int value, int min, int max)
+    {
+        if (value < min)
+            value = min;
+        else if (value > max)
+            value = max;
+        return value;
+    }
+
     private bool GetIsCanCross(int x, int y, int dirX, int dirY)
     {
         int horX = x - dirX;
         int horY = y - dirY;
-        //ø…“‘◊ﬂ–±Ω«
+        //ÂèØ‰ª•Ëµ∞ÊñúËßí
         return m_GridBase.IsInBound(x, y) && m_GridBase.m_Grid[x, y].m_canWalk && ((m_GridBase.IsInBound(horX, y) && m_GridBase.m_Grid[horX, y].m_canWalk) || (m_GridBase.IsInBound(x, horY) && m_GridBase.m_Grid[x, horY].m_canWalk));
-        //≤ªƒ‹◊ﬂ–±Ω«
+        //‰∏çËÉΩËµ∞ÊñúËßí
         //return m_GridBase.IsInBound(x, y) && m_GridBase.m_Grid[x,y].m_canWalk && m_GridBase.IsInBound(horX, y) && m_GridBase.m_Grid[horX, y].m_canWalk && m_GridBase.IsInBound(x, horY) && m_GridBase.m_Grid[x, horY].m_canWalk;
     }
 
-    //∂‘Ω«œﬂÀ—À˜Ã¯µ„
+    //ÂØπËßíÁ∫øÊêúÁ¥¢Ë∑≥ÁÇπ
     private JPSNode biasFind(int dirX, int dirY, JPSNode currentNode)
     {
         int nextX = currentNode.m_GridX + dirX;
         int nextY = currentNode.m_GridY + dirY;
+        JPSNode endNode = m_GridBase.GetFromPosition(end.position);
 
         if (!GetIsCanCross(nextX, nextY, dirX, dirY))
         {
@@ -157,11 +306,11 @@ public class JPSFindPath : MonoBehaviour
         {
             return null;
         }
-        if (nextNode == m_GridBase.GetFromPosition(end.position))
+        if (nextNode.Equals(endNode))
         {
             return nextNode;
         }
-        //≈–∂œnext «∑ÒŒ™Ã¯µ„
+        //Âà§Êñ≠nextÊòØÂê¶‰∏∫Ë∑≥ÁÇπ
         JPSNode horNode = lineFind(dirX, 0, nextNode);
         if (horNode != null) return nextNode;
         JPSNode verNode = lineFind(0, dirY, nextNode);
@@ -170,11 +319,12 @@ public class JPSFindPath : MonoBehaviour
         return biasFind(dirX, dirY, nextNode);
     }
 
-    //÷±œﬂÀ—À˜Ã¯µ„
+    //Áõ¥Á∫øÊêúÁ¥¢Ë∑≥ÁÇπ
     private JPSNode lineFind(int dirX, int dirY, JPSNode currentNode)
     {
         int nextX = currentNode.m_GridX + dirX;
         int nextY = currentNode.m_GridY + dirY;
+        JPSNode endNode = m_GridBase.GetFromPosition(end.position);
         if (!m_GridBase.IsInBound(nextX, nextY))
         {
             return null;
@@ -184,16 +334,16 @@ public class JPSFindPath : MonoBehaviour
         {
             return null;
         }
-        //≈–∂œnext «∑ÒŒ™Ã¯µ„
+        //Âà§Êñ≠nextÊòØÂê¶‰∏∫Ë∑≥ÁÇπ
         //1.next == end
-        if (nextNode == m_GridBase.GetFromPosition(end.position))
+        if (nextNode.Equals(endNode))
         {
             return nextNode;
         }
-        //2.next”–«ø∆»¡⁄æ”
+        //2.nextÊúâÂº∫Ëø´ÈÇªÂ±Ö
         if (dirX != 0)
         {
-            //…œœ¬µ„ «∑Ò «Ã¯µ„
+            //‰∏ä‰∏ãÁÇπÊòØÂê¶ÊòØË∑≥ÁÇπ
             int upY = nextY + 1;
             if (m_GridBase.IsInBound(nextX, upY))
             {
@@ -219,7 +369,7 @@ public class JPSFindPath : MonoBehaviour
             if (m_GridBase.IsInBound(rightX, nextY))
             {
                 JPSNode node = m_GridBase.m_Grid[rightX, nextY];
-                if (node.m_canWalk && m_GridBase.m_Grid[rightX, nextY - dirY].m_canWalk)
+                if (node.m_canWalk && !m_GridBase.m_Grid[rightX, nextY - dirY].m_canWalk)
                 {
                     return nextNode;
                 }
@@ -246,7 +396,32 @@ public class JPSFindPath : MonoBehaviour
             path.Push(node);
             node = node.parent;
         }
+        if (node == startNode)
+        {
+            path.Push(node);
+        }
         m_GridBase.m_Path = path;
+    }
+
+    private int getHCost(JPSNode curCell, JPSNode endCell)
+    {
+        int x = Mathf.Abs(curCell.m_GridX - endCell.m_GridX);
+        int y = Mathf.Abs(curCell.m_GridY - endCell.m_GridY);
+        return (x + y) * 10;
+        //int min = Math.Min(x, y);
+        //return min * 14 + Math.Abs(x - y) * 10;
+    }
+
+    private int getGCostInLine(JPSNode curCell, JPSNode endCell)
+    {
+        int x = Mathf.Abs(curCell.m_GridX - endCell.m_GridX);
+        int y = Mathf.Abs(curCell.m_GridY - endCell.m_GridY);
+        return (x + y) * 10;
+    }
+    private int getGCostInBias(JPSNode curCell, JPSNode endCell)
+    {
+        int x = Mathf.Abs(curCell.m_GridX - endCell.m_GridX);
+        return x * 14;
     }
 
     int GetDistance(JPSNode n1, JPSNode n2)
